@@ -1,0 +1,29 @@
+{
+  "name": "tagy-components",
+  "version": "0.1.0",
+  "authors": [
+    "m-a-t-t <matjazonline@gmail.com>"
+  ],
+  "description": "angular directives for inline html editing",
+  "keywords": [
+    "angular",
+    "inline",
+    "edit",
+    "directive",
+      "edit inline",
+      "front end cms",
+      "edit html",
+      "tagy"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-uuid": "~0.1.0"
+  }
+}
