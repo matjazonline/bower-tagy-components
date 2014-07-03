@@ -8,7 +8,7 @@ angular.module('tagyComponents')
             scope:false,
             link:{
                 post:function postLink(scope, element, attrs) {
-                    var ATTR_NAME_EMIT_SHARED_ELEMENT_SAVE="magnet-cms-emit-update"
+                    var ATTR_NAME_EMIT_SHARED_ELEMENT_SAVE="tagy-cms-emit-update"
                     if(element.prop("tagName")=="STYLE"){
                         //TODO optimize get <style> element where change happened
                         EditableMessageChannel.onStyleValueChange(scope,function(value){

@@ -128,6 +128,26 @@
                             }
                         }
 
+                    } else if(currTagName=="TITLE"){
+                        scope.data.value = element.html()
+                        scope.update = function (value) {
+                            if (value != element.html() && angular.isString(value)) {
+                                element.html( value)
+                                //scope.editable.value = value
+                                scope.data.value=value
+                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable,{element:scope.editable.element})
+                            }
+                        }
+                    } else if(currTagName=="META"){
+                        scope.data.value = element.attr("content")
+                        scope.update = function (value) {
+                            if (value != element.attr("content") && angular.isString(value)) {
+                                element.attr("content", value)
+                                //scope.editable.value = value
+                                scope.data.value=value
+                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable,{element:scope.editable.element})
+                            }
+                        }
                     }else {
 
 

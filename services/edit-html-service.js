@@ -6,11 +6,11 @@ angular.module('tagyComponents')
         this.removeInProductionClassName = "remove-in-production"
         this.removeEditGeneratedTagsAfterThisMetaElement = '<meta class="remove-added-tags-to-head-from-here">'
         var baseTagHref=""
-        var iframeAppScriptPath = "bower-angular-edit-inline-iframe-app/scripts/scripts.js";
+        var iframeAppScriptPath = "bower-tagy-components-iframe-app/scripts/scripts.js";
         var iframeAppExtraModulesArr =[]
         var iframeAppExtraModulesPathArr =[]
-        var iframeEditorAppAttr = 'ng-app="magnetCmsApp"';
-        var editModeCssClassName = "magnet-cms-edit-mode";
+        var iframeEditorAppAttr = 'ng-app="tagyCmsClientApp"';
+        var editModeCssClassName = "tagy-cms-edit-mode";
         var self = this
 
         var _editingHtmlMarkup = null
@@ -92,19 +92,33 @@ angular.module('tagyComponents')
         }*/
 
         this.cleanEditableMarkupWraps=function(markup){
-            var bodyHtml = self.getStringInsideBodyOrHeadTag(markup, "body")
+            var mkp=markup
+            var bodyHtml = self.getStringInsideBodyOrHeadTag(mkp, "body")
             var hasBodyTag=bodyHtml.length>0
-            if(!hasBodyTag)bodyHtml=markup
+            if(!hasBodyTag)bodyHtml=mkp
             var $mkp = $("<div/>").html(bodyHtml)
 
             $mkp.find('[' + EditableSer.EDITABLE_BINDING_WRAP_ATTR_NAME + ']').each(function(i,obj){
                 var $obj=$(obj)
                 var cont=$obj.html()
-                $obj.parent().html(cont)
+                var prnt = $obj.parent();
+                prnt.html(cont)
+                prnt.removeClass("ng-isolate-scope")
+                prnt.removeClass("ng-scope")
+                var clArr = prnt.attr('class').split(/\s+/);
+                if(clArr!=null && (clArr.length<1 || (clArr.length==1 && clArr[0].length<1))){
+                    prnt.removeAttr('class');
+                }
             })
 
-            if(!hasBodyTag)return $mkp.html()
-            return self.replaceStringInsideBodyOrHeadTag(markup, $mkp.html(), "body")
+            if(!hasBodyTag){
+                return $mkp.html()
+            }/*else{
+                var headCleaned=self.cleanEditableMarkupWraps(self.getStringInsideBodyOrHeadTag(mkp, "head"))
+                //console.log("HHHHHCCCCCCCC=",headCleaned)
+                mkp=self.replaceStringInsideBodyOrHeadTag(mkp, headCleaned, "head")
+            }*/
+            return self.replaceStringInsideBodyOrHeadTag(mkp, $mkp.html(), "body")
         }
 
         this.cleanRemoveInProductionCssClasses=function(markup){
@@ -209,7 +223,7 @@ angular.module('tagyComponents')
             } else {
                 if (changeMarkupChangeId)markup = markupChangeIdFac.changeMarkupChangeId(markup)
             }
-            if(markup.indexOf(iframeEditorAppAttr)<0)markup = markup.replace("<html", '<html ng-app="magnetCmsApp" ')
+            if(markup.indexOf(iframeEditorAppAttr)<0)markup = markup.replace("<html", '<html ng-app="tagyCmsClientApp" ')
             markup=self.addEditModeCssClass(markup)
             markup=insertBaseTag(markup)
             //TODO removeEditGeneratedTagsAfterThisMetaElement is a quick fix better remove with search
@@ -246,7 +260,7 @@ angular.module('tagyComponents')
                 if(i+1==iframeAppExtraModulesArr.length)modulesArrStr=modulesArrStr+']'
             }
             if(modulesArrStr.length>0) {
-                ret='<script>var _magnetCmsAppExtraModules='+modulesArrStr+'</script>'
+                ret='<script>var _tagyCmsClientAppExtraModules='+modulesArrStr+'</script>'
             }
             return ret
         }

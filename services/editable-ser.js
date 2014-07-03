@@ -10,7 +10,7 @@ angular.module('tagyComponents')
         this.frwConst.LAYOUT_FRAMEWORK_FOUNDATION = "foundationFr"
         this.layoutFramework = this.frwConst.LAYOUT_FRAMEWORK_FOUNDATION
         this.EDITABLE_BINDING_WRAP_ATTR_NAME="editable-binding-w"
-        //this.ADMIN_UI_ELEM_ATTR_TO_REMOVE="magnet-cms-remove-elem-in-production"
+        //this.ADMIN_UI_ELEM_ATTR_TO_REMOVE="tagy-cms-remove-elem-in-production"
         this._editableComponents = []
 
         this.registerComponent = function (editableComponent) {

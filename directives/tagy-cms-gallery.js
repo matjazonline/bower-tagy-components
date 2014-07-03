@@ -67,11 +67,11 @@ if(!isTopComponent) {
                     var controlsHol = $galleryItem.children(".tagy-cms-gallery-controls");
 
                   if(controlsHol.length<1) {
-                        //var controlsHol = $("<div remove-in-production class='tagy-cms-gallery-controls' style='position: absolute;top: 0px;'><a magnet-cms-remove-gallery-item class='button tiny alert' href=''>-</a><a magnet-cms-add-gallery-item class='button tiny' href=''>+</a></div> ");
-                        var controlsHol = $("<div remove-in-production class='tagy-cms-gallery-controls'><style>[tagy-cms-gallery] .selected-item_remove-in-production{border:dotted 1px lime}.tagy-cms-gallery-controls .button.tiny{margin:0px;font-size:18px;padding-top: .12em;padding-bottom: .12em;padding-right: .5em;padding-left: .5em;}</style><a magnet-cms-remove-gallery-item class='button tiny alert' href='' style='background-color: red;color: #ffffff;'>-</a><a style='background-color: green; color: #ffffff;' magnet-cms-add-gallery-item class='button tiny' href=''>+</a></div> ");
+                        //var controlsHol = $("<div remove-in-production class='tagy-cms-gallery-controls' style='position: absolute;top: 0px;'><a tagy-cms-remove-gallery-item class='button tiny alert' href=''>-</a><a tagy-cms-add-gallery-item class='button tiny' href=''>+</a></div> ");
+                        var controlsHol = $("<div remove-in-production class='tagy-cms-gallery-controls'><style>[tagy-cms-gallery] .selected-item_remove-in-production{border:dotted 1px lime}.tagy-cms-gallery-controls .button.tiny{margin:0px;font-size:18px;padding-top: .12em;padding-bottom: .12em;padding-right: .5em;padding-left: .5em;}</style><a tagy-cms-remove-gallery-item class='button tiny alert' href='' style='background-color: red;color: #ffffff;'>-</a><a style='background-color: green; color: #ffffff;' tagy-cms-add-gallery-item class='button tiny' href=''>+</a></div> ");
                         $galleryItem.prepend(controlsHol)
                     }
-                        $("[magnet-cms-add-gallery-item]",controlsHol).on("click",function(ev){
+                        $("[tagy-cms-add-gallery-item]",controlsHol).on("click",function(ev){
 
                             //if(!ev.isPropagationStopped()) {
                                 var $newGItem
@@ -93,7 +93,7 @@ if(!isTopComponent) {
                                 if (ev && ev.stopImmediatePropagation)ev.stopImmediatePropagation()
                            // }
                         })
-                        $("[magnet-cms-remove-gallery-item]",controlsHol).on("click",function(ev){
+                        $("[tagy-cms-remove-gallery-item]",controlsHol).on("click",function(ev){
 
                                 if (confirm("You want to delete this?")) {
                                     scope.removeElementWithEditableContent($galleryItem)
@@ -106,7 +106,7 @@ if(!isTopComponent) {
                         })
 
                     var findParentGalleryItem=function(elem ){
-                        var curr=$(elem)//$($("article[tagy-cms-gallery]").find("[magnet-cms-add-gallery-item]")[0])
+                        var curr=$(elem)//$($("article[tagy-cms-gallery]").find("[tagy-cms-add-gallery-item]")[0])
                         var gall=curr.closest("[tagy-cms-gallery]")
                         var ancestors=curr.parents()
                         for (var i = 0; i < ancestors.length; i++) {
@@ -116,7 +116,7 @@ if(!isTopComponent) {
                             }
                         }
                     }
-                        $("[magnet-cms-remove-gallery-item]",controlsHol).parent().hover(function(ev){
+                        $("[tagy-cms-remove-gallery-item]",controlsHol).parent().hover(function(ev){
                             var gallItem=findParentGalleryItem($(ev.target))
                             if(gallItem) {
                                 gallItem.addClass('selected-item_remove-in-production')
