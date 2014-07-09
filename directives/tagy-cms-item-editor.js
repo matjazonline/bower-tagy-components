@@ -61,7 +61,12 @@ angular.module('tagyComponents')
                     theme: "modern",
                     skin: 'light',
                     toolbar: 'undo redo| bold italic underline fontsizeselect | alignleft aligncenter alignright alignjustify | bullist numlist | link | fullscreen code template'
-                    ,menubar: false,plugins: "link fullscreen code",forced_root_block:false, resize: "both",valid_elements:"+*[*]",
+                    ,menubar: false,
+                    plugins: "link fullscreen code",
+                    forced_root_block:false,
+                    resize: "both",
+                    valid_elements:"+*[*]",
+                    convert_urls : false
                     //plugins: "template",
                     /*templates: [
                         {title: 'Some title 1', description: 'Some desc 1', content: '<a href="#" class="">templ link</a> '}

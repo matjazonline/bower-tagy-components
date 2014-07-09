@@ -1,6 +1,7 @@
 (function (window, angular, undefined) {
     'use strict';
 
+
     angular.module('tagyComponents', ['uuid'])
         .directive('tagyCmsEditable', function ($compile, $q, $sce,  EditableSer, EditableMessageChannel, editableContentFactory) {
             //var dropdownId=null
@@ -34,13 +35,13 @@
                 replace: true,
                 priority: 0,
                 scope: {
-                    editableObj: '=', tagyCmsEditable: '@', editableEscapeHtml:'@'
+                    editableObj: '=', tagyCmsEditable: '@', editableEscapeHtml: '@'
                 },
-                controller:function($scope, $element, $attrs, $transclude){
-                    this.remove=function(muteUpdatedEvent){
+                controller: function ($scope, $element, $attrs, $transclude) {
+                    this.remove = function (muteUpdatedEvent) {
                         $scope.editable.destroy()
                         $scope.$destroy()
-                        if(muteUpdatedEvent!=true) {
+                        if (muteUpdatedEvent != true) {
                             EditableMessageChannel.dispatchUpdatedEvent(null, {element: $element})
                         }
                         $element.remove()
@@ -49,45 +50,45 @@
                 link: function postLink(scope, element, attrs) {
                     //scope.editable = editableContentFactory.getInstance(element, scope, "", "", "", null)
 
-                    var eTitle=attrs.editableTitle
-                    if(eTitle==null || eTitle.length<1)eTitle=attrs.tagyCmsEditable
-                    if(eTitle!=null && eTitle.length>0){
+                    var eTitle = attrs.editableTitle
+                    if (eTitle == null || eTitle.length < 1)eTitle = attrs.tagyCmsEditable
+                    if (eTitle != null && eTitle.length > 0) {
                         //scope.editable.updateOpts(element, scope, attrs.editableTitle, attrs.editableDescription, null, getDataValue())
-                        scope.editable=editableContentFactory.getInstance(element, scope, eTitle, attrs.editableDescription, null, null)
-                    }else{
+                        scope.editable = editableContentFactory.getInstance(element, scope, eTitle, attrs.editableDescription, null, null)
+                    } else {
                         element.text('Editable item needs a title, for example: tagy-cms-editable="title"')
                         return
                     }
 
                     var currTagName = element.prop("tagName")
 
-                    var getDataValue=function(){
-                        if(scope.data!=null && scope.data.value!=null && angular.isFunction(scope.data.value.valueOf )) {
+                    var getDataValue = function () {
+                        if (scope.data != null && scope.data.value != null && angular.isFunction(scope.data.value.valueOf)) {
                             return scope.data.value.valueOf()
                         }
                         return scope.data.value
 
                     }
 
-                    var setEditableProps=function(editableProps){
-                        if(editableProps.link!=null){
-                            scope.data.editProp_link=editableProps.link
-                            element.attr("href",scope.data.editProp_link)
+                    var setEditableProps = function (editableProps) {
+                        if (editableProps.link != null) {
+                            scope.data.editProp_link = editableProps.link
+                            element.attr("href", scope.data.editProp_link)
                         }
-                        if(scope.data.editProp_backgroundImage!=null){
+                        if (scope.data.editProp_backgroundImage != null) {
 
-                            scope.data.editProp_backgroundImage=editableProps.backgroundImage=='' || editableProps.backgroundImage==null?'':editableProps.backgroundImage
-                            if(scope.data.editProp_backgroundImage!=''){
-                                $(element).css("background-image",'url("'+scope.data.editProp_backgroundImage+'")')
-                            }else{
-                                $(element).css("background-image",'none')
+                            scope.data.editProp_backgroundImage = editableProps.backgroundImage == '' || editableProps.backgroundImage == null ? '' : editableProps.backgroundImage
+                            if (scope.data.editProp_backgroundImage != '') {
+                                $(element).css("background-image", 'url("' + scope.data.editProp_backgroundImage + '")')
+                            } else {
+                                $(element).css("background-image", 'none')
                             }
                         }
                     }
 
                     scope.data = {}
                     function getBackgroundFilePath(cssBackgroundProp) {
-                        var cssBackgroundValue=cssBackgroundProp
+                        var cssBackgroundValue = cssBackgroundProp
                         if (cssBackgroundValue == null || cssBackgroundValue == '' || cssBackgroundValue == 'none') {
                             cssBackgroundValue = ''
                         } else {
@@ -110,7 +111,7 @@
                             ev.preventDefault()
                             ev.stopPropagation()
                             scope.$apply(function () {
-                                scope.editable.value =  scope.data.value
+                                scope.editable.value = scope.data.value
                                 EditableMessageChannel.dispatchEditEvent(scope.editable)
                             })
 
@@ -123,32 +124,32 @@
                             if (value != element.attr("src") && angular.isString(value)) {
                                 element.attr("src", value)
                                 //scope.editable.value = value
-                                scope.data.value=value
-                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable,{element:scope.editable.element})
+                                scope.data.value = value
+                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
                             }
                         }
 
-                    } else if(currTagName=="TITLE"){
+                    } else if (currTagName == "TITLE") {
                         scope.data.value = element.html()
                         scope.update = function (value) {
                             if (value != element.html() && angular.isString(value)) {
-                                element.html( value)
+                                element.html(value)
                                 //scope.editable.value = value
-                                scope.data.value=value
-                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable,{element:scope.editable.element})
+                                scope.data.value = value
+                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
                             }
                         }
-                    } else if(currTagName=="META"){
+                    } else if (currTagName == "META") {
                         scope.data.value = element.attr("content")
                         scope.update = function (value) {
                             if (value != element.attr("content") && angular.isString(value)) {
                                 element.attr("content", value)
                                 //scope.editable.value = value
-                                scope.data.value=value
-                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable,{element:scope.editable.element})
+                                scope.data.value = value
+                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
                             }
                         }
-                    }else {
+                    } else {
 
 
                         if (scope.editableObj != null && attrs.editablePropertyName != null) {
@@ -161,42 +162,41 @@
                             })
                             scope.data.value = scope.editableObj[attrs.editablePropertyName]
                             element.text("")
-                        } else if(attrs.editableProps==null) {
+                        } else if (attrs.editableProps == null) {
                             scope.data.value = element.html()
                         }
                         //scope.editable.value = scope.data.value
-                        if(attrs.editableProps==null){
-                            if(scope.editableEscapeHtml=='true'){
+                        if (attrs.editableProps == null) {
+                            if (scope.editableEscapeHtml == 'true') {
                                 /*var nodeString = "{{data.value}}";
                                  element.text(nodeString);*/
-                                $(element).empty().append('<span '+EditableSer.EDITABLE_BINDING_WRAP_ATTR_NAME+' ng-bind="data.value"></span>')
+                                $(element).empty().append('<span ' + EditableSer.EDITABLE_BINDING_WRAP_ATTR_NAME + ' ng-bind="data.value"></span>')
                                 //scope.editable.value = scope.data.value
-                            }else{
-                                scope.data.value=$sce.trustAsHtml(scope.data.value.toString())
-                                $(element).empty().append('<span '+EditableSer.EDITABLE_BINDING_WRAP_ATTR_NAME+' ng-bind-html="data.value"></span>')
+                            } else {
+                                scope.data.value = $sce.trustAsHtml(scope.data.value.toString())
+                                $(element).empty().append('<span ' + EditableSer.EDITABLE_BINDING_WRAP_ATTR_NAME + ' ng-bind-html="data.value"></span>')
                                 //scope.editable.value = getDataValue()
                             }
                             $compile(element.contents())(scope);
-                        }else{
-                            scope.editable.value=null
-                            scope.data.value=null
-                            if(attrs.editableProps.indexOf("background-image")>-1) {
-                                scope.data.editProp_backgroundImage=getBackgroundFilePath($(element).css("background-image"));
+                        } else {
+                            scope.editable.value = null
+                            scope.data.value = null
+                            if (attrs.editableProps.indexOf("background-image") > -1) {
+                                scope.data.editProp_backgroundImage = getBackgroundFilePath($(element).css("background-image"));
 
 
-                                scope.editable.editProps["backgroundImage"]=scope.data.editProp_backgroundImage
+                                scope.editable.editProps["backgroundImage"] = scope.data.editProp_backgroundImage
                             }
                         }
-                        if(currTagName=="A"){
-                            scope.data.editProp_link=$(element).attr("href")
-                            scope.editable.editProps["link"]=scope.data.editProp_link
+                        if (currTagName == "A") {
+                            scope.data.editProp_link = $(element).attr("href")
+                            scope.editable.editProps["link"] = scope.data.editProp_link
                         }
 
                         //.append("<i class='icon-pencil icon-muted no-muted-hover "+EditableSer.removeInProductionClassName+"' style='position: absolute;'></i>")
 
                         //moved up - $compile(element.contents())(scope);
                         //$compile (angular.element(createEditableInterface(element)).contents())(scope)
-
 
 
                         element.click(function (ev) {
@@ -210,16 +210,16 @@
 
 
                         scope.update = function (value) {
-                            if (angular.isString(value) && value != scope.data.value && scope.data.value!=null) {
-                                if(scope.editableEscapeHtml=='true') {
+                            if (angular.isString(value) && value != scope.data.value && scope.data.value != null) {
+                                if (scope.editableEscapeHtml == 'true') {
                                     scope.data.value = value
-                                }else{
+                                } else {
                                     scope.data.value = $sce.trustAsHtml(value.toString())
                                 }
-                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable,{element:scope.editable.element})
-                            }else if(angular.isObject(value)){
+                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
+                            } else if (angular.isObject(value)) {
                                 setEditableProps(value)
-                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable,{element:scope.editable.element})
+                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
                             }
                         }
 
@@ -227,26 +227,28 @@
                     }
 
                     /*element.hover(function (ev) {
-                        *//*$(".no-muted-hover",element).removeClass("icon-muted")*//*
-                        EditableMessageChannel.dispatchEditableItemHoverOver(scope.editable)
-                    }, function (ev) {
-                        //$(".no-muted-hover",element).addClass("icon-muted")
-                        EditableMessageChannel.dispatchEditableItemHoverOut(scope.editable)
-                    })*/
+                     */
+                    /*$(".no-muted-hover",element).removeClass("icon-muted")*/
+                    /*
+                     EditableMessageChannel.dispatchEditableItemHoverOver(scope.editable)
+                     }, function (ev) {
+                     //$(".no-muted-hover",element).addClass("icon-muted")
+                     EditableMessageChannel.dispatchEditableItemHoverOut(scope.editable)
+                     })*/
 
                     /*scope.$watch("tagyCmsEditable", function (val) {
-                        if (val != null && val[0] == "{") {
-                            var json = angular.fromJson(val)
-                            scope.editable.updateOpts(element, scope, json.title, json.description, null, getDataValue())
-                        }
-                    })*/
+                     if (val != null && val[0] == "{") {
+                     var json = angular.fromJson(val)
+                     scope.editable.updateOpts(element, scope, json.title, json.description, null, getDataValue())
+                     }
+                     })*/
                     scope.editable.value = getDataValue()
                     scope.editable.registerOnComponent()
                     /*if(attrs.editableTitle!=null){
                      scope.editable.updateOpts(element, scope, attrs.editableTitle, attrs.editableDescription, null, getDataValue())
-                    }*/
+                     }*/
 
                 }
-            };
+            }
         })
 })(window, angular)
