@@ -16,13 +16,13 @@ angular.module('tagyComponents')
         }
         EditableComponent.prototype.registerEditableContentObject = function (newEditableContentObj) {
 
-                var count=1
-                while(this.contentObjTitleExists(newEditableContentObj.title)){
-                    var idSeparatorInd = newEditableContentObj.title.indexOf(":");
-                    if(idSeparatorInd>0)newEditableContentObj.title=newEditableContentObj.title.substring(0,idSeparatorInd)
-                    newEditableContentObj.title=newEditableContentObj.title+':'+count
-                    count++
-                }
+            var count=1
+            while(this.contentObjTitleExists(newEditableContentObj.title)){
+                var idSeparatorInd = newEditableContentObj.title.indexOf(":");
+                if(idSeparatorInd>0)newEditableContentObj.title=newEditableContentObj.title.substring(0,idSeparatorInd)
+                newEditableContentObj.title=newEditableContentObj.title+':'+count
+                count++
+            }
 
             this._editableContentObjects.push(newEditableContentObj)
             EditableMessageChannel.dispatchEditableComponentUpdated(this)
@@ -89,9 +89,14 @@ angular.module('tagyComponents')
                 return  editableComponent
             },
             getViewComponentAttributeName:function(){
+                //TODO move to editable-content-factory
                 return 'tagy-cms-editable'
             },
+            getEditableComponentAttributeName:function(){
+                return 'tagy-cms-component'
+            },
             getViewComponentDirectiveName:function(){
+                //TODO move to editable-content-factory
                 return 'tagyCmsEditable'
             }
         };

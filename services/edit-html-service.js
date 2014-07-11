@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('tagyComponents')
-    .service('EditHtmlService', function EditHtmlService($rootScope, $q, $timeout, EditableSer, markupChangeIdFac, EditableMessageChannel) {
+    .service('EditHtmlService', function EditHtmlService($rootScope, $q, $timeout, EditableSer, markupChangeIdFac, editableComponentFactory, EditableMessageChannel) {
 
         this.removeInProductionClassName = "remove-in-production"
         this.removeEditGeneratedTagsAfterThisMetaElement = '<meta class="remove-added-tags-to-head-from-here">'
@@ -82,14 +82,14 @@ angular.module('tagyComponents')
         }
 
         /*this.cleanMagnetAdminUIElements=function(markup) {
-            var bodyHtml = self.getStringInsideBodyOrHeadTag(markup, "body")
-            var $mkp = $("<div/>").html(bodyHtml)
+         var bodyHtml = self.getStringInsideBodyOrHeadTag(markup, "body")
+         var $mkp = $("<div/>").html(bodyHtml)
 
-            $mkp.find('[' + EditableSer.ADMIN_UI_ELEM_ATTR_TO_REMOVE + ']').remove()
+         $mkp.find('[' + EditableSer.ADMIN_UI_ELEM_ATTR_TO_REMOVE + ']').remove()
 
 
-            return self.replaceStringInsideBodyOrHeadTag(markup, $mkp.html(), "body")
-        }*/
+         return self.replaceStringInsideBodyOrHeadTag(markup, $mkp.html(), "body")
+         }*/
 
         this.cleanEditableMarkupWraps=function(markup){
             var mkp=markup
@@ -114,10 +114,10 @@ angular.module('tagyComponents')
             if(!hasBodyTag){
                 return $mkp.html()
             }/*else{
-                var headCleaned=self.cleanEditableMarkupWraps(self.getStringInsideBodyOrHeadTag(mkp, "head"))
-                //console.log("HHHHHCCCCCCCC=",headCleaned)
-                mkp=self.replaceStringInsideBodyOrHeadTag(mkp, headCleaned, "head")
-            }*/
+             var headCleaned=self.cleanEditableMarkupWraps(self.getStringInsideBodyOrHeadTag(mkp, "head"))
+             //console.log("HHHHHCCCCCCCC=",headCleaned)
+             mkp=self.replaceStringInsideBodyOrHeadTag(mkp, headCleaned, "head")
+             }*/
             return self.replaceStringInsideBodyOrHeadTag(mkp, $mkp.html(), "body")
         }
 
@@ -128,20 +128,20 @@ angular.module('tagyComponents')
             if(!hasBodyTag)bodyHtml=markup
             var $mkp = $("<div/>").html(bodyHtml)
 
-                var elems=$mkp.find('*')
-                for (var i = 0; i < elems.length; i++) {
-                    var $currElem = $(elems[i]);
-                    var attrCl = $currElem.attr("class");
-                    if(attrCl){
-                        var remClArr=attrCl.match(/[\w-]*_remove-in-production[\w-]*/g);
-                        if(remClArr && remClArr.length>0){
-                            for (var j = 0; j < remClArr.length; j++) {
-                                var toRemClass = remClArr[j];
-                                $currElem.removeClass(toRemClass)
-                            }
+            var elems=$mkp.find('*')
+            for (var i = 0; i < elems.length; i++) {
+                var $currElem = $(elems[i]);
+                var attrCl = $currElem.attr("class");
+                if(attrCl){
+                    var remClArr=attrCl.match(/[\w-]*_remove-in-production[\w-]*/g);
+                    if(remClArr && remClArr.length>0){
+                        for (var j = 0; j < remClArr.length; j++) {
+                            var toRemClass = remClArr[j];
+                            $currElem.removeClass(toRemClass)
                         }
                     }
                 }
+            }
             if(!hasBodyTag)return $mkp.html()
             return self.replaceStringInsideBodyOrHeadTag(markup, $mkp.html(), "body")
         }
@@ -225,6 +225,7 @@ angular.module('tagyComponents')
             }
             if(markup.indexOf(iframeEditorAppAttr)<0)markup = markup.replace("<html", '<html ng-app="tagyCmsClientApp" ')
             markup=self.addEditModeCssClass(markup)
+            markup=self.addTopLevelEditableComponentAttr(markup)
             markup=insertBaseTag(markup)
             //TODO removeEditGeneratedTagsAfterThisMetaElement is a quick fix better remove with search
             markup = self.clearAndAppendToHeadElement(markup, self.removeEditGeneratedTagsAfterThisMetaElement)
@@ -351,5 +352,17 @@ angular.module('tagyComponents')
             var ret=markup.substring(0,stInd)+htmlOpenTag+markup.substring(endInd)
 
             return ret
+        }
+        this.addTopLevelEditableComponentAttr=function(markup){
+
+            var stInd=markup.indexOf("<html")
+            var endInd=markup.indexOf(">",stInd)
+            var compAttrInd = markup.indexOf(editableComponentFactory.getEditableComponentAttributeName());
+            if(stInd>-1 && endInd>stInd &&  ( compAttrInd==-1 || (compAttrInd>endInd) ) ){
+                return markup.substring(0,endInd)+' '+editableComponentFactory.getEditableComponentAttributeName()+'="top level content"'+markup.substring(endInd)
+            }else if(stInd<0){
+                console.log("INFO editHtmlService - no <html tag found")
+            }
+            return markup
         }
     });

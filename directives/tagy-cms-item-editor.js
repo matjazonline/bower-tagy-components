@@ -57,7 +57,7 @@ angular.module('tagyComponents')
 
                 scope.filePath=''
                 scope.tinyMceOptions={
-                    theme_url: '/tinymce/tt.js',
+                    //theme_url: '/tinymce/tt.js',
                     theme: "modern",
                     skin: 'light',
                     toolbar: 'undo redo| bold italic underline fontsizeselect | alignleft aligncenter alignright alignjustify | bullist numlist | link | fullscreen code template'

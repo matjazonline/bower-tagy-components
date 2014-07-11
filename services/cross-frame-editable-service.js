@@ -37,10 +37,6 @@ angular.module('tagyComponents')
                         var currContentObj = componentVO._editableContentObjects[j];
                         var newContObj=currComp.createAndRegisterEditableContentObject(currContentObj)
                         if(newContObj==null && currContentObj.title==null)alert("Set title to editable element in "+currComp.title)
-                        /*if(!currComp.contentObjTitleExists(currContentObj.title)){
-                            var obj = editableContentFactory.create(currContentObj)
-                            currComp.registerEditableContentObject(obj)
-                        }*/
                     }
                     EditableMessageChannel.dispatchEditableComponentUpdated(currComp)
                 }))

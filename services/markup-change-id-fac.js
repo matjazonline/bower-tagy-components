@@ -50,7 +50,16 @@ angular.module('tagyComponents')
                 if(markup==null)return null
                 var oldChangeId = getMarkupChangeId(markup)
                 if (oldChangeId == null) {
-                    if (markup.indexOf("<html") > -1 && markup.indexOf("<head") > -1) {
+                    var htmlTagStart = markup.indexOf("<html");
+                    if (htmlTagStart > -1 ) {
+                        if( markup.indexOf("<head") <0) {
+                            var htmlTagEnd=markup.indexOf('>',htmlTagStart)
+                            if(htmlTagEnd>-1) {
+                                markup=markup.substring(0,htmlTagEnd+1)+'<head></head>'+markup.substring(htmlTagEnd+1)
+                            }else{
+                                console.log("INFO markup-change-id-fac.js - is html tag closed?")
+                            }
+                        }
                         var headOpenTagEndInd=markup.indexOf(">", markup.indexOf("<head"))+1
                             return markup.substring(0,headOpenTagEndInd)+api.getMetaTagStr()+ (markup.substring(headOpenTagEndInd))
                     } else {

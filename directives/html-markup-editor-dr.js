@@ -3,10 +3,11 @@
 angular.module('tagyComponents')
   .directive('htmlMarkupEditorDr', function (markupChangeIdFac,EditableStyleSer,$rootScope, EditHtmlService, EditableMessageChannel, $timeout) {
     return {
-      template: '<div><textarea id="edit-html-iframe-markup-field" ng-model="editHtml"></textarea><a class="button success" ng-click="updateHtmlPreview()">preview markup</a></div>',
+      template: '<div><textarea id="edit-html-iframe-markup-field" ng-model="editHtml" style="height: 300px;"></textarea><a ng-show="displayButton==true" class="button success" ng-click="updateHtmlPreview()">preview changes</a></div>',
       restrict: 'E',
         scope:{
-            editHtml:'@'
+            editHtml:'@',
+            displayButton:'@'
         },
       link: function postLink(scope, element, attrs) {
           var dontUpdateOnChangeId
