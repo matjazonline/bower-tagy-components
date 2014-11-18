@@ -38,6 +38,12 @@ angular.module('tagyComponents')
                         var newContObj=currComp.createAndRegisterEditableContentObject(currContentObj)
                         if(newContObj==null && currContentObj.title==null)alert("Set title to editable element in "+currComp.title)
                     }
+                    if(componentVO._editableContentObjects.length<currComp._editableContentObjects.length) {
+                        for (var i = 0; i < currComp._editableContentObjects.length; i++) {
+                            var remContObj= currComp._editableContentObjects[i];
+                            if(!editableComponentFactory.editableContentArrHasEditableItem(componentVO._editableContentObjects,remContObj))currComp.unregisterEditableContentObject(remContObj,true)
+                        }
+                    }
                     EditableMessageChannel.dispatchEditableComponentUpdated(currComp)
                 }))
 
@@ -73,6 +79,9 @@ angular.module('tagyComponents')
                     EditableMessageChannel.dispatchEditEvent(editableObj)
                 }))
 
+                CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_EDIT_UPDATED, function (editableObj,eventObj) {
+                    EditableMessageChannel.dispatchUpdatedEvent(editableObj,eventObj)
+                }))
 
                  if( !listenersInited){
                      listenersInited=true

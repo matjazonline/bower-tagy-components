@@ -4,18 +4,19 @@ angular.module('tagyComponents')
     .factory('editableContentFactory', function (EditableMessageChannel) {
 
 
-        var EditableItem = function (element, scope, title, description, type, value, editProps) {
+        var EditableItem = function (element, scope, title, description, type, value, editProps,visible) {
             this.registered=false;
-            this.updateOpts(element, scope, title, description, type, value, editProps)
+            this.updateOpts(element, scope, title, description, type, value, editProps,visible)
         }
 
-        EditableItem.prototype.updateOpts = function (element, scope, title, description, type, value, editProps) {
+        EditableItem.prototype.updateOpts = function (element, scope, title, description, type, value, editProps, visible) {
             this.element = $(element)
             this.scope = scope
             this.title = title
             this.description = description
             this.type = (this.element != null && this.element.length > 0) ? this._getType() : type
             this.value = value
+            this.visible=(visible==null || visible!=false)?true:false
             if(this.editProps==null)this.editProps={}
             if(editProps!=null)this.editProps=editProps
         }
@@ -63,12 +64,12 @@ angular.module('tagyComponents')
 
 
         var api = {
-            getInstance: function (element, scope, title, description, type, value, editProps) {
-                var editableItem = new EditableItem(element, scope, title, description, type, value, editProps);
+            getInstance: function (element, scope, title, description, type, value, editProps,visible) {
+                var editableItem = new EditableItem(element, scope, title, description, type, value, editProps, visible);
                 return  editableItem
             }
-            ,getAndRegisterInstance: function (element, scope, title, description, type, value, editProps) {
-                var editableItem = api.getInstance(element, scope, title, description, type, value, editProps);
+            ,getAndRegisterInstance: function (element, scope, title, description, type, value, editProps, visible) {
+                var editableItem = api.getInstance(element, scope, title, description, type, value, editProps, visible);
                 editableItem.registerOnComponent()
                 /*if (scope != null && scope.$emit != null) {
                     EditableMessageChannel.dispatchEditableContentObjectAdded(scope, editableItem)

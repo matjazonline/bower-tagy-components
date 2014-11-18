@@ -4,7 +4,7 @@ angular.module('tagyComponents')
     .directive('tagyCmsItemEditor', function (EditableMessageChannel,$timeout) {
         return {
             template: '<div ng-show="isMyEditableItem()">'+
-                '<h3>{{_editableItem.title}} <br/><small>{{_editableItem.description}}</small></h3>' +
+                '<h3>{{_editableItem.title}} <a href="" ng-click="showEditable(editableObject, !_editableItem.visible)"><i class="fa" ng-class="{\'fa-eye\':_editableItem.visible, \'fa-eye-slash\':!_editableItem.visible}"></i></a> <a href="" ng-click="removeEditable(editableObject)"><i class="fa fa-trash-o right" style="color: red;"></i></a> <br/><small>{{_editableItem.description}}</small></h3>' +
                 '' +
                 '<div  ng-if="_editableItem.type==\'image\'"><img ng-src="{{filePath}}"/>' +
                 '<input ng-model="_editableItem.value">' +
@@ -74,14 +74,42 @@ angular.module('tagyComponents')
                 }
                 scope._editableItem=null
                 var currentEditableItemSet=null
+                EditableMessageChannel.onUpdated(scope,function(editableItem, eventObj){
+                    if(scope.isMyEditableItem(scope.showForEditableItem, editableItem)){
+
+                        if(eventObj.type=="remove"){
+                            //scope._editableItem.destroy()
+                            return
+                        }
+
+                        //TODO why called 2x
+                        //console.log("UUUUUUUU",editableItem)
+                        //TODO just set visibility for now
+                        scope._editableItem.visible = editableItem.visible
+                    }
+                    /*var elm=(editableItem!=null && editableItem.element!=null)?editableItem.element:updatedElem.element
+
+                    if(elm && elm.get!=null){
+                        var changedEl=elm.get(0)
+                        if(changedEl!=null){
+                            var domEl=element.get(0)
+                            var isUnderMe=$.contains(domEl,changedEl)
+                            if(isUnderMe)element.attr(ATTR_NAME_EMIT_SHARED_ELEMENT_SAVE,"true")
+                        }
+                    }else{
+                        console.log("INFO tagy-cms-sync: can not get updated element")
+                    }*/
+                })
+
                 EditableMessageChannel.onEdit(scope, function (editableItem) {
+
                     try{
                         stopValueWatcher()
                         stopPropsWatcher()
                     }catch(e){}
                     if(scope.isMyEditableItem(scope.showForEditableItem, editableItem)){
                         //TODO optimize - now every editor is updated when scope._editableItem is set to the current editableItem value
-
+                        //console.log("OEEEEEE",editableItem.visible)
                         scope._editableItem = editableItem
                         stopValueWatcher=startValueWatch()
                         stopPropsWatcher=startPropsWatch()
@@ -95,6 +123,7 @@ angular.module('tagyComponents')
                                 //TODO select image for specific editableProp
                                 EditableMessageChannel.dispatchSelectImageWaiting(scope._editableItem)
                             }
+                            console.log("editable onEDIT=",scope._editableItem)
                         }
                     }else{
                         scope._editableItem=null
@@ -147,6 +176,13 @@ angular.module('tagyComponents')
                         ret=  checkAgainstExternalEditableObj!=null ? (checkAgainstExternalEditableObj!=null && checkAgainstExternalEditableObj.scope.$id==editorForEditableObj.scope.$id ):false
                     }
                     return ret
+                }
+                
+                scope.showEditable=function(editableObj,val){
+                    EditableMessageChannel.dispatchNewValueUpdate({type:'visible',value:val}, scope._editableItem.scope.$id)
+                }
+                scope.removeEditable=function(editableObj){
+                    if(confirm("This will delete element. Continue?"))EditableMessageChannel.dispatchNewValueUpdate({type:'remove',value:true}, scope._editableItem.scope.$id)
                 }
             }
         };

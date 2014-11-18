@@ -31,13 +31,13 @@ angular.module('tagyComponents')
         }
 
         this.onUpdated = function ($scope, handler) {
-            $scope.$on(self.EVENT_EDIT_UPDATED, function (event, editableItem, updatedElem) {
-                handler(editableItem,updatedElem)
+            $scope.$on(self.EVENT_EDIT_UPDATED, function (event, editableItem, updatedElem,noHTMLrefresh) {
+                handler(editableItem,updatedElem,noHTMLrefresh)
             })
         }
 
-        this.dispatchUpdatedEvent = function (editableItem,updatedElem) {
-            $rootScope.$broadcast(self.EVENT_EDIT_UPDATED, editableItem, updatedElem)
+        this.dispatchUpdatedEvent = function (editableItem,updatedElem, noHTMLrefresh) {
+            $rootScope.$broadcast(self.EVENT_EDIT_UPDATED, editableItem, updatedElem,noHTMLrefresh)
         }
 
         this.dispatchEditEvent = function (editableItem) {

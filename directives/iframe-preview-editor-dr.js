@@ -22,7 +22,10 @@ angular.module('tagyComponents')
               }
           })
 
-          var editUpdatedHandler = function () {
+          var editUpdatedHandler = function (editableItem,updatedElem,noHTMLrefresh) {
+              if(noHTMLrefresh==true){
+                  return
+              }
               var mkp=markupChangeIdFac.changeMarkupChangeId(EditHtmlService.cleanEditFrameworkCode  (getMarkup()))
               dontUpdateOnChangeId=markupChangeIdFac.getCurrentChangeId(mkp)
               EditHtmlService.editHtmlMarkup(mkp)

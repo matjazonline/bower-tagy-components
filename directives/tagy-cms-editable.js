@@ -39,22 +39,43 @@
                 },
                 controller: function ($scope, $element, $attrs, $transclude) {
                     this.remove = function (muteUpdatedEvent) {
+                        var eScopeId=$scope.editable.scope.$id
                         $scope.editable.destroy()
                         $scope.$destroy()
                         if (muteUpdatedEvent != true) {
-                            EditableMessageChannel.dispatchUpdatedEvent(null, {element: $element})
+                            EditableMessageChannel.dispatchUpdatedEvent(null, {element: $element, type:'remove', editableScopeId:eScopeId})
                         }
                         $element.remove()
                     }
                 },
-                link: function postLink(scope, element, attrs) {
+                link: function postLink(scope, element, attrs,controller) {
                     //scope.editable = editableContentFactory.getInstance(element, scope, "", "", "", null)
+                    var _originalCssDisplayVal=$(element).css('display')
+                    if(attrs.tagyCmsVisible==null)attrs.tagyCmsVisible=_originalCssDisplayVal!='none'
+                    scope.setVisible=function(val){
+                        if(val=='false' || val==false){
+                            _originalCssDisplayVal=$(element).css('display')
+                            $(element).css('display','none')
+                            $(element).attr('tagy-cms-visible',false)
+                            attrs.tagyCmsVisible=false
+                            scope.editable.visible=false
+                        }else{
+                            var dispVal=(_originalCssDisplayVal!=null || _originalCssDisplayVal!='none' || _originalCssDisplayVal.length<1)?'':_originalCssDisplayVal
+                            $(element).css('display',dispVal)
+                            $(element).removeAttr('tagy-cms-visible')
+                            attrs.tagyCmsVisible=true
+                            scope.editable.visible=true
+                        }
+                        if(scope.editable!=null && scope.editable.registered)EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element},false)
+                    }
+
 
                     var eTitle = attrs.editableTitle
                     if (eTitle == null || eTitle.length < 1)eTitle = attrs.tagyCmsEditable
                     if (eTitle != null && eTitle.length > 0) {
                         //scope.editable.updateOpts(element, scope, attrs.editableTitle, attrs.editableDescription, null, getDataValue())
-                        scope.editable = editableContentFactory.getInstance(element, scope, eTitle, attrs.editableDescription, null, null)
+                        scope.editable = editableContentFactory.getInstance(element, scope, eTitle, attrs.editableDescription, null, null,null,(attrs.tagyCmsVisible!='false'))
+                        scope.setVisible(attrs.tagyCmsVisible)
                     } else {
                         element.text('Editable item needs a title, for example: tagy-cms-editable="title"')
                         return
@@ -69,6 +90,7 @@
                         return scope.data.value
 
                     }
+
 
                     var setEditableProps = function (editableProps) {
                         if (editableProps.link != null) {
@@ -126,6 +148,19 @@
                                 //scope.editable.value = value
                                 scope.data.value = value
                                 EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
+                            }else if (angular.isObject(value)) {
+                                if(value.type!=null ){
+                                    if(value.type=='visible'){
+                                        scope.setVisible(value.value)
+                                        return
+                                    }else if(value.type=='remove'){
+                                        controller.remove()
+                                        return
+                                    }
+                                }else{
+                                    setEditableProps(value)
+                                    EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
+                                }
                             }
                         }
 
@@ -150,7 +185,6 @@
                             }
                         }
                     } else {
-
 
                         if (scope.editableObj != null && attrs.editablePropertyName != null) {
 
@@ -218,8 +252,21 @@
                                 }
                                 EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
                             } else if (angular.isObject(value)) {
-                                setEditableProps(value)
-                                EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
+
+
+                                if(value.type!=null ){
+                                    if(value.type=='visible'){
+                                        scope.setVisible(value.value)
+                                        return
+                                    }else if(value.type=='remove'){
+                                        controller.remove()
+                                        return
+                                    }
+                                }else{
+                                    setEditableProps(value)
+                                    EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
+                                }
+
                             }
                         }
 
@@ -244,6 +291,9 @@
                      })*/
                     scope.editable.value = getDataValue()
                     scope.editable.registerOnComponent()
+                    /*attrs.$observe('tagyCmsVisible', function(val) {
+                     scope.setVisible(val)
+                    })*/
                     /*if(attrs.editableTitle!=null){
                      scope.editable.updateOpts(element, scope, attrs.editableTitle, attrs.editableDescription, null, getDataValue())
                      }*/

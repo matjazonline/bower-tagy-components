@@ -12,7 +12,7 @@ angular.module('tagyComponents')
                 setUpdateHtmlAceValueFn:'='
             },
             link: function postLink(scope, element, attrs) {
-                var dontUpdateOnChangeId
+                var dontUpdateOnChangeId,aceEditor,lastCursorPosition
                 EditableMessageChannel.onEditableHtmlMarkupChange(scope,function(markup, changeId, markupWithEditFrameworkResources){
                     if(changeId>dontUpdateOnChangeId|| markupChangeIdFac.getMarkupChangeId(scope.editHtml)==null ) {
                         scope.editHtml=markup
@@ -20,16 +20,32 @@ angular.module('tagyComponents')
                 })
 
                 scope.updateHtmlPreview=function(){
+                    if(aceEditor)lastCursorPosition=aceEditor.getCursorPosition()
                     if(scope.aceDirty) {
                         var mkp = markupChangeIdFac.changeMarkupChangeId(scope.editHtml)
                         dontUpdateOnChangeId = markupChangeIdFac.getCurrentChangeId(mkp)
-                        EditHtmlService.editHtmlMarkup(mkp)
+                        var updatedPromise=EditHtmlService.editHtmlMarkup(mkp)
+
+                        updatedPromise.then(function(){
+                            $timeout(function(){
+                                aceEditor.focus()
+                                if(lastCursorPosition){
+                                    aceEditor.moveCursorToPosition(lastCursorPosition)
+                                    aceEditor.scrollToLine(lastCursorPosition.row, true)
+                                }
+                            },2000)
+
+                        })
+                        return updatedPromise
                     }
+                    return null
                 }
 
                 scope.aceDirty=false
                 scope.aceLoaded = function(_editor) {
                     // Options
+                    aceEditor=_editor
+                    if(lastCursorPosition)aceEditor.moveCursorToPosition(lastCursorPosition)
                     scope.aceDirty=false
                 };
 

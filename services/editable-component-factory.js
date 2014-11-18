@@ -27,10 +27,10 @@ angular.module('tagyComponents')
             this._editableContentObjects.push(newEditableContentObj)
             EditableMessageChannel.dispatchEditableComponentUpdated(this)
         }
-        EditableComponent.prototype.unregisterEditableContentObject = function (editableContentObj) {
+        EditableComponent.prototype.unregisterEditableContentObject = function (editableContentObj, mute) {
 
             this._editableContentObjects.splice(this._editableContentObjects.indexOf(editableContentObj),1)
-            EditableMessageChannel.dispatchEditableComponentUpdated(this)
+            if(!mute)EditableMessageChannel.dispatchEditableComponentUpdated(this)
         }
         EditableComponent.prototype.createAndRegisterEditableContentObject = function (newEditableContentVO) {
             if(!this.contentObjTitleExists(newEditableContentVO.title)){
@@ -59,19 +59,19 @@ angular.module('tagyComponents')
         }
 
         EditableComponent.prototype.hasEditableItemObj = function ( editableItem) {
-
-            for (var i = 0; i < this._editableContentObjects.length; i++) {
+            return api.editableContentArrHasEditableItem(this._editableContentObjects,editableItem)
+            /*for (var i = 0; i < this._editableContentObjects.length; i++) {
                 var obj = this._editableContentObjects[i];
                 if (obj.scope.$id==editableItem.scope.$id)return true
             }
-            return false
+            return false*/
         }
 
         EditableComponent.prototype.destroy = function ( ) {
             EditableSer.unregisterComponent(this.id)
         }
 
-        return {
+        var api= {
             getInstance: function (title, element, $scope, id) {
                 if(id==null)id=$scope.$id
                 var editableComponent = EditableSer.getRegisteredComponent(id)
@@ -88,6 +88,13 @@ angular.module('tagyComponents')
                 }
                 return  editableComponent
             },
+            editableContentArrHasEditableItem:function(editableContentObjArr,editableItem){
+                for (var i = 0; i < editableContentObjArr.length; i++) {
+                    var obj = editableContentObjArr[i];
+                    if (obj.scope.$id==editableItem.scope.$id)return true
+                }
+                return false
+            },
             getViewComponentAttributeName:function(){
                 //TODO move to editable-content-factory
                 return 'tagy-cms-editable'
@@ -100,4 +107,5 @@ angular.module('tagyComponents')
                 return 'tagyCmsEditable'
             }
         };
+        return api
     });
