@@ -63,6 +63,13 @@ angular.module('tagyComponents')
             }
         })
 
+        EditableMessageChannel.onNewValueUpdateComponent($rootScope, function (editableComponentId, newValue) {
+            var comp=self.getRegisteredComponent(editableComponentId)
+            if(comp){
+                comp.update(newValue)
+            }
+        })
+
         var waitingOnImageSelect=null
         EditableMessageChannel.onSelectImageWaiting($rootScope,function(editableItem){
             waitingOnImageSelect=editableItem

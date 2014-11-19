@@ -47,6 +47,12 @@ angular.module('tagyComponents')
                     EditableMessageChannel.dispatchEditableComponentUpdated(currComp)
                 }))
 
+                CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_NEW_VALUE_COMPONENT_UPDATED, function (componentId,objVO) {
+                    //debugger
+
+                    EditableMessageChannel.dispatchNewValueComponentUpdated(componentId,objVO)
+                }))
+
                 CrossFrameConnection.invokeServiceMethod("EditableSer", "getRegisteredComponents", null).then(function (res) {
                     for (var i = 0; i < res.length; i++) {
                         var componentVO = res[i];
@@ -87,6 +93,9 @@ angular.module('tagyComponents')
                      listenersInited=true
                      //TODO in EditableMessageChannel check if handler function is already registered
                      EditableMessageChannel.onNewValueUpdateEditable($rootScope, onNewValueUpdateEditableHandler)
+                     EditableMessageChannel.onNewValueUpdateComponent($rootScope, function(componentId,value){
+                         CrossFrameConnection.invokeServiceMethod("EditableMessageChannel", "dispatchNewValueUpdateComponent", [componentId, value])
+                     })
 
                      EditableMessageChannel.onStyleValueChange($rootScope, function(styleVal){
                          CrossFrameConnection.invokeServiceMethod("EditableMessageChannel", "dispatchStyleValueChange", [styleVal])

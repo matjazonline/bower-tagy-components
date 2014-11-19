@@ -11,6 +11,8 @@ angular.module('tagyComponents')
         this.EVENT_HOVER_OUT = "tagyComponents:tagyCmsEditable:editableItemHoverOut"
         this.EVENT_EDIT_UPDATED = "tagyComponents:tagyCmsEditable:editableItemSaved"
         this.EVENT_NEW_VALUE_UPDATE_EDITABLE = "tagyComponents:tagyCmsEditable:updateEditableValue"
+        this.EVENT_NEW_VALUE_UPDATE_COMPONENT = "tagyComponents:tagyCmsEditable:updateComponentValue"
+        this.EVENT_NEW_VALUE_COMPONENT_UPDATED = "tagyComponents:tagyCmsEditable:componentValueUpdated"
         this.EVENT_EDITABLE_CONTENT_OBJECT_ADDED = "tagyComponents:tagyCmsEditable:editableContentObjectAdded"
         this.EVENT_EDITABLE_CONTENT_OBJECT_REMOVED = "tagyComponents:tagyCmsEditable:editableContentObjectRemoved"
         this.EVENT_EDITABLE_COMPONENT_ADDED = "tagyComponents:tagyCmsEditable:editableComponentAdded"
@@ -67,6 +69,26 @@ angular.module('tagyComponents')
             }
             $rootScope.$broadcast(self.EVENT_NEW_VALUE_UPDATE_EDITABLE, newValue, scopeId)
             //return editableItem.scope.update(value)
+        }
+
+        this.onNewValueUpdateComponent = function ($scope, handler) {
+            $scope.$on(self.EVENT_NEW_VALUE_UPDATE_COMPONENT, function (event, componentId,newValue) {
+                handler(componentId, newValue)
+            })
+        }
+
+        this.dispatchNewValueUpdateComponent = function ( componentId, newValue) {
+            $rootScope.$broadcast(self.EVENT_NEW_VALUE_UPDATE_COMPONENT,componentId, newValue)
+        }
+
+        this.onNewValueComponentUpdated = function ($scope, handler) {
+            $scope.$on(self.EVENT_NEW_VALUE_COMPONENT_UPDATED, function (event, componentId,newValue) {
+                handler(componentId, newValue)
+            })
+        }
+
+        this.dispatchNewValueComponentUpdated = function ( componentId, newValue) {
+            $rootScope.$broadcast(self.EVENT_NEW_VALUE_COMPONENT_UPDATED,componentId, newValue)
         }
 
         this.dispatchEditableItemHoverOver = function (editableItem) {

@@ -19,7 +19,7 @@ angular.module('tagyComponents')
 
                 '<dl ng-show="isCurrentLayoutFr(frameworkConsts.LAYOUT_FRAMEWORK_FOUNDATION)" class="accordion" data-accordion id="editable-comp-accordion">' +
                 '<dd ng-repeat="editableComponent in componentsOnPage">'+
-                '<a href="" ng-click="setNowEditingComponent(editableComponent)">{{editableComponent.title}}</a>'+
+                '<a href="" ng-click="setNowEditingComponent(editableComponent)">{{editableComponent.title}} <span ng-click="showComponent($event,editableComponent,!editableComponent.visible)"><i class="fa" ng-class="{\'fa-eye\':editableComponent.visible,\'fa-eye-slash\':!editableComponent.visible}"></i></span></a>'+
                 '<div class="content" ng-class="{active:nowEditingComponent==editableComponent}">'+
                 '<ul><li ng-repeat="editableObject in editableComponent.getEditableContentObjects()"><a href="" ng-hide="isNowEditing(editableObject)" ng-click="editEditableObject(editableObject)"> {{editableObject.title}}</a>' +
                 '<tagy-cms-item-editor show-For-Editable-Item="editableObject" get-File-Abs-Path="getFileAbsPath"></tagy-cms-item-editor>' +
@@ -55,6 +55,13 @@ angular.module('tagyComponents')
                     var comp=getComponentById(updatedComp.id)
                     if(updatedComp!==comp)comp=updatedComp
                 })
+                EditableMessageChannel.onNewValueComponentUpdated(scope,function(updatedCompId,valVO){
+
+                    var comp=getComponentById(updatedCompId)
+                    if(comp)comp.visible=valVO.component.visible
+                    alert("add listener to iframe, dispatch with visible value set")
+                    //if(comp)console.log("valVO.component.visible",comp.visible,valVO)
+                })
 
                 /*scope.getFileAbsPathFn=function(){
                  return scope.getFileAbsPath()()
@@ -70,6 +77,12 @@ angular.module('tagyComponents')
                     var editableContentObjects = edComp.getEditableContentObjects();
                     if(editableContentObjects.length==1 )scope.editEditableObject(editableContentObjects[0])
 
+                }
+
+                scope.showComponent=function(ev,edComp,val){
+                    ev.preventDefault()
+                    ev.stopImmediatePropagation()
+                    EditableMessageChannel.dispatchNewValueUpdateComponent(edComp.id,{type:'visible',value:val})
                 }
 
 
