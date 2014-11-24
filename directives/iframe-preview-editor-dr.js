@@ -35,7 +35,8 @@ angular.module('tagyComponents')
           CrossFrameConnection.onFrameConnectionSuccess(scope,function(){
               CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_EDIT_UPDATED, editUpdatedHandler))
               CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_EDITABLE_STYLE_VALUE_UPDATED, editUpdatedHandler))
-
+              CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_NEW_VALUE_COMPONENT_UPDATED, editUpdatedHandler))
+              CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_EDITABLE_COMPONENT_REMOVED, editUpdatedHandler))
           })
 
           var getMarkup=function(){

@@ -52,6 +52,7 @@
                     //scope.editable = editableContentFactory.getInstance(element, scope, "", "", "", null)
                     var _originalCssDisplayVal=$(element).css('display')
                     if(attrs.tagyCmsVisible==null)attrs.tagyCmsVisible=_originalCssDisplayVal!='none'
+                    attrs.tagyCmsVisible=(attrs.tagyCmsVisible==true||attrs.tagyCmsVisible=='true')?true:false
                     scope.setVisible=function(val){
                         if(val=='false' || val==false){
                             _originalCssDisplayVal=$(element).css('display')
@@ -74,7 +75,7 @@
                     if (eTitle == null || eTitle.length < 1)eTitle = attrs.tagyCmsEditable
                     if (eTitle != null && eTitle.length > 0) {
                         //scope.editable.updateOpts(element, scope, attrs.editableTitle, attrs.editableDescription, null, getDataValue())
-                        scope.editable = editableContentFactory.getInstance(element, scope, eTitle, attrs.editableDescription, null, null,null,(attrs.tagyCmsVisible!='false'))
+                        scope.editable = editableContentFactory.getInstance(element, scope, eTitle, attrs.editableDescription, null, null,null,attrs.tagyCmsVisible)
                         scope.setVisible(attrs.tagyCmsVisible)
                     } else {
                         element.text('Editable item needs a title, for example: tagy-cms-editable="title"')

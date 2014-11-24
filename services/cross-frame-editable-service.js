@@ -28,11 +28,11 @@ angular.module('tagyComponents')
                 }))
                 CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_EDITABLE_COMPONENT_REMOVED, function (editableCompVO, componentsArr) {
                     var regComp=EditableSer.getRegisteredComponent(editableCompVO.id)
-                    regComp.destroy()
+                    if(regComp)regComp.destroy()
                 }))
                 CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_EDITABLE_COMPONENT_UPDATED, function (componentVO) {
                     //debugger
-                    var currComp = editableComponentFactory.getInstance(componentVO.title, null, null, componentVO.id);
+                    var currComp = editableComponentFactory.getInstanceCopy(componentVO)
                     for (var j = 0; j < componentVO._editableContentObjects.length; j++) {
                         var currContentObj = componentVO._editableContentObjects[j];
                         var newContObj=currComp.createAndRegisterEditableContentObject(currContentObj)
@@ -48,15 +48,13 @@ angular.module('tagyComponents')
                 }))
 
                 CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_NEW_VALUE_COMPONENT_UPDATED, function (componentId,objVO) {
-                    //debugger
-
                     EditableMessageChannel.dispatchNewValueComponentUpdated(componentId,objVO)
                 }))
 
                 CrossFrameConnection.invokeServiceMethod("EditableSer", "getRegisteredComponents", null).then(function (res) {
                     for (var i = 0; i < res.length; i++) {
                         var componentVO = res[i];
-                        var currComp = editableComponentFactory.getInstance(componentVO.title, null, null, componentVO.id);
+                        var currComp = editableComponentFactory.getInstanceCopy(componentVO)
                         for (var j = 0; j < componentVO._editableContentObjects.length; j++) {
                             var currContentObj = componentVO._editableContentObjects[j];
                             var newContObj=currComp.createAndRegisterEditableContentObject(currContentObj)
@@ -82,6 +80,7 @@ angular.module('tagyComponents')
                 })
 
                 CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_EDIT, function (editableObj) {
+                    console.log("EEEE",editableObj)
                     EditableMessageChannel.dispatchEditEvent(editableObj)
                 }))
 

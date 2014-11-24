@@ -1,7 +1,11 @@
 'use strict';
-
 angular.module('tagyComponents')
     .directive('tagyCmsSharedId', function ( EditableMessageChannel) {
+
+
+//deprecated
+
+
         return {
             replace:false,
             restrict: 'A',
@@ -15,7 +19,7 @@ angular.module('tagyComponents')
                             element.attr(ATTR_NAME_EMIT_SHARED_ELEMENT_SAVE,"true")
                         })
                     }else{
-                        EditableMessageChannel.onUpdated(scope,function(editableItem,updatedElem){
+                        /*EditableMessageChannel.onUpdated(scope,function(editableItem,updatedElem){
                             var elm=(editableItem!=null && editableItem.element!=null)?editableItem.element:updatedElem.element
 
                             if(elm && elm.get!=null){
@@ -28,7 +32,26 @@ angular.module('tagyComponents')
                             }else{
                                 console.log("INFO tagy-cms-shared-id: can not get updated element")
                             }
-                        })
+                        })*/
+
+                        var checkIfUpdatedChild=function(editableItem,updatedElem){
+                            var elm=(editableItem!=null && editableItem.element!=null)?editableItem.element:updatedElem.element
+
+                            if(elm && elm.get!=null){
+                                var changedEl=elm.get(0)
+                                if(changedEl!=null){
+                                    var domEl=element.get(0)
+                                    var isUnderMe=$.contains(domEl,changedEl)
+                                    if(isUnderMe)element.attr(ATTR_NAME_EMIT_SHARED_ELEMENT_SAVE,"true")
+                                }
+                            }else{
+                                console.log("INFO tagy-cms-shared-id: can not get updated element")
+                            }
+                        }
+                        EditableMessageChannel.onUpdated(scope,checkIfUpdatedChild)
+                        EditableMessageChannel.onNewValueComponentUpdated(scope,checkIfUpdatedChild)
+                        EditableMessageChannel.onEditableComponentRemoved(scope,checkIfUpdatedChild)
+
                     }
                 }
             }

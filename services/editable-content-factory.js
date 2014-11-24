@@ -76,7 +76,7 @@ angular.module('tagyComponents')
                 }*/
                 return  editableItem
             }, create: function (vo) {
-                return api.getInstance(null, vo.scope, vo.title, vo.description, vo.type, vo.value, vo.editProps)
+                return api.getInstance(null, vo.scope, vo.title, vo.description, vo.type, vo.value, vo.editProps,vo.visible)
             },
             getViewComponentAttributeName:function(){
                             return 'tagy-cms-editable'

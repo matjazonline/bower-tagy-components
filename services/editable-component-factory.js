@@ -93,6 +93,9 @@ angular.module('tagyComponents')
                     })
                 }
                 return  editableComponent
+            },getInstanceCopy: function (componentInst) {
+                return  api.getInstance(componentInst.title, null, null, componentInst.id,componentInst.visible)
+
             },
             editableContentArrHasEditableItem:function(editableContentObjArr,editableItem){
                 for (var i = 0; i < editableContentObjArr.length; i++) {

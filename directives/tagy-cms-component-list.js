@@ -19,7 +19,7 @@ angular.module('tagyComponents')
 
                 '<dl ng-show="isCurrentLayoutFr(frameworkConsts.LAYOUT_FRAMEWORK_FOUNDATION)" class="accordion" data-accordion id="editable-comp-accordion">' +
                 '<dd ng-repeat="editableComponent in componentsOnPage">'+
-                '<a href="" ng-click="setNowEditingComponent(editableComponent)">{{editableComponent.title}} <span ng-click="showComponent($event,editableComponent,!editableComponent.visible)"><i class="fa" ng-class="{\'fa-eye\':editableComponent.visible,\'fa-eye-slash\':!editableComponent.visible}"></i></span></a>'+
+                '<a href="" ng-click="setNowEditingComponent(editableComponent)">{{editableComponent.title}} <span ng-click="setComponentVisibility($event,editableComponent,!editableComponent.visible)"><i class="fa" ng-class="{\'fa-eye\':editableComponent.visible,\'fa-eye-slash\':!editableComponent.visible}"></i></span><span class="right" ng-click="deleteComponent($event,editableComponent)"><i class="fa fa-trash-o"></i></span></a>'+
                 '<div class="content" ng-class="{active:nowEditingComponent==editableComponent}">'+
                 '<ul><li ng-repeat="editableObject in editableComponent.getEditableContentObjects()"><a href="" ng-hide="isNowEditing(editableObject)" ng-click="editEditableObject(editableObject)"> {{editableObject.title}}</a>' +
                 '<tagy-cms-item-editor show-For-Editable-Item="editableObject" get-File-Abs-Path="getFileAbsPath"></tagy-cms-item-editor>' +
@@ -58,8 +58,11 @@ angular.module('tagyComponents')
                 EditableMessageChannel.onNewValueComponentUpdated(scope,function(updatedCompId,valVO){
 
                     var comp=getComponentById(updatedCompId)
+                    if(valVO.type=='remove'){
+
+                    }
+
                     if(comp)comp.visible=valVO.component.visible
-                    alert("add listener to iframe, dispatch with visible value set")
                     //if(comp)console.log("valVO.component.visible",comp.visible,valVO)
                 })
 
@@ -79,10 +82,17 @@ angular.module('tagyComponents')
 
                 }
 
-                scope.showComponent=function(ev,edComp,val){
+                scope.setComponentVisibility=function(ev,edComp,val){
                     ev.preventDefault()
                     ev.stopImmediatePropagation()
                     EditableMessageChannel.dispatchNewValueUpdateComponent(edComp.id,{type:'visible',value:val})
+                }
+
+
+                scope.deleteComponent=function(ev,edComp){
+                    ev.preventDefault()
+                    ev.stopImmediatePropagation()
+                    if(confirm("This will permanently remove element. Continue?"))EditableMessageChannel.dispatchNewValueUpdateComponent(edComp.id,{type:'remove',value:true})
                 }
 
 

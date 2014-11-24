@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('tagyComponents')
-  .directive('tagyCmsComponent', function (EditableSer, editableComponentFactory,EditableMessageChannel) {
+  .directive('tagyCmsComponent', function (EditableSer, editableComponentFactory,EditableMessageChannel, $timeout) {
     return {
         replace:false,
       restrict: 'A',
@@ -9,18 +9,24 @@ angular.module('tagyComponents')
         scope:true,
         controller:function($scope, $element, $attrs, $transclude){
             this.remove=function(muteUpdatedEvent){
+                var compId=$scope.editableComponent.id
                 $scope.editableComponent.destroy()
                 $scope.$destroy()
                 if(muteUpdatedEvent!=true) {
-                    EditableMessageChannel.dispatchUpdatedEvent(null, {element: $element})
+                    //EditableMessageChannel.dispatchNewValueComponentUpdated(compId, {element: $element, type:'remove', id:compId})
+                   // EditableMessageChannel.dispatchEditableComponentRemoved(compId, {element: $element, type:'remove', id:compId})
                 }
-                $element.remove()
+                var remEl=function(){
+                    $($element).remove()
+                }
+                $timeout(remEl,0)
             }
         },
       link:{
           pre:function preLink(scope, element, attrs,controller){
               var _originalCssDisplayVal=$(element).css('display')
               if(attrs.tagyCmsVisible==null)attrs.tagyCmsVisible=_originalCssDisplayVal!='none'
+              attrs.tagyCmsVisible=(attrs.tagyCmsVisible===true||attrs.tagyCmsVisible==='true')?true:false
               scope.setVisible=function(val){
                   if(val=='false' || val==false){
                       _originalCssDisplayVal=$(element).css('display')
@@ -41,6 +47,7 @@ angular.module('tagyComponents')
               //var editableComponent = editableComponentFactory.getInstance("untitled",element, scope)
               scope.editableComponent =null
               var compTitle=attrs.editableTitle?attrs.editableTitle:attrs.tagyCmsComponent
+
               if(compTitle!=null) {
                   scope.editableComponent =editableComponentFactory.getInstance(compTitle,element, scope,null,attrs.tagyCmsVisible)
                   //scope.editableComponent.updateOpts( compTitle, element, attrs.editableDescription)
