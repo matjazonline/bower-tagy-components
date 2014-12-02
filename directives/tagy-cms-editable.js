@@ -122,6 +122,8 @@
                         return cssBackgroundValue
                     }
 
+
+
                     if (currTagName == "IMG") {
                         scope.data.value = element.attr("src")
                         //element.addClass("editable-image-element")
@@ -143,11 +145,26 @@
                              document.onViewUpdatedCallback({event: "event:select-file", resHolder: {id: now.getTime(), callbackFn: onFileSelected}})*/
                         })
 
+                        /*if(attrs.tagyCmsThumb!=null && element.parent().is("A")){
+                            element.parent().click(function (ev) {
+                                console.log("PPPPPPPPCCC")
+                                ev.preventDefault()
+                                ev.stopPropagation()
+                            })
+                        }*/
+
                         scope.update = function (value) {
                             if (value != element.attr("src") && angular.isString(value)) {
-                                element.attr("src", value)
-                                //scope.editable.value = value
-                                scope.data.value = value
+                                /*element.attr("src", value)
+                                scope.data.value = value*/
+                                if(attrs.tagyCmsThumb!=null && element.parent().is("A")){
+                                    element.parent().attr("href",scope.editable.value)
+                                    scope.data.value = value+'?s'
+                                    element.attr("src", scope.data.value)
+                                }else{
+                                    element.attr("src", value)
+                                    scope.data.value = value
+                                }
                                 EditableMessageChannel.dispatchUpdatedEvent(scope.editable, {element: scope.editable.element})
                             }else if (angular.isObject(value)) {
                                 if(value.type!=null ){
