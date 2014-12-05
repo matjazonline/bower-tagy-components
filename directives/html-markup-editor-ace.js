@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('tagyComponents')
-    .directive('htmlMarkupEditorAce', function (markupChangeIdFac,EditableStyleSer,$rootScope, EditHtmlService, EditableMessageChannel, $timeout) {
+    .directive('htmlMarkupEditorAce', function (markupChangeIdFac,EditableStyleSer,$rootScope, EditHtmlService, EditableMessageChannel, $timeout,$q) {
         return {
             template: '<div><a ng-show="showButton!=null" class="button success" ng-click="updateHtmlPreview()"><i class="fa fa-desktop"></i> update and preview changes</a>' +
                 '<div ui-ace="{showGutter: true,theme:\'twilight\',mode: \'html\',onLoad: aceLoaded,onChange: aceChanged}" ng-model="editHtml"></div></div>',
@@ -19,26 +19,30 @@ angular.module('tagyComponents')
                     }
                 })
 
-                scope.updateHtmlPreview=function(){
+                scope.updateHtmlPreview=function(positionCursor){
                     if(aceEditor)lastCursorPosition=aceEditor.getCursorPosition()
+                    var deferred = $q.defer();
                     if(scope.aceDirty) {
                         var mkp = markupChangeIdFac.changeMarkupChangeId(scope.editHtml)
                         dontUpdateOnChangeId = markupChangeIdFac.getCurrentChangeId(mkp)
                         var updatedPromise=EditHtmlService.editHtmlMarkup(mkp)
-
                         updatedPromise.then(function(){
-                            $timeout(function(){
-                                aceEditor.focus()
-                                if(lastCursorPosition){
-                                    aceEditor.moveCursorToPosition(lastCursorPosition)
-                                    aceEditor.scrollToLine(lastCursorPosition.row, true)
-                                }
-                            },2000)
-
+                            var positionCursor=function(){
+                                $timeout(function(){
+                                    aceEditor.focus()
+                                    if(lastCursorPosition){
+                                        aceEditor.moveCursorToPosition(lastCursorPosition)
+                                        aceEditor.scrollToLine(lastCursorPosition.row, true)
+                                    }
+                                },1000)
+                            }
+                            if(positionCursor==true || positionCursor==null)positionCursor()
+                            deferred.resolve(positionCursor);
                         })
-                        return updatedPromise
+                    }else{
+                        deferred.reject()
                     }
-                    return null
+                    return deferred.promise
                 }
 
                 scope.aceDirty=false

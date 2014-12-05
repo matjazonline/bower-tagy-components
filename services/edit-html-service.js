@@ -29,6 +29,9 @@ angular.module('tagyComponents')
                 _editingHtmlMarkup = markup
                 var cleanMarkup = self.cleanEditFrameworkCode(markup);
                 EditableMessageChannel.dispatchEditableHtmlMarkupChange(cleanMarkup, newChangeId,_editingHtmlMarkup)
+                deferred.resolve()
+            }else{
+                deferred.reject()
             }
             return deferred.promise
         }
