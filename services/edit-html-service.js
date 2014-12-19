@@ -5,6 +5,10 @@ angular.module('tagyComponents')
 
         this.removeInProductionClassName = "remove-in-production"
         this.removeEditGeneratedTagsAfterThisMetaElement = '<meta class="remove-added-tags-to-head-from-here">'
+        this.removeAddedScriptsStartAttr = 'remove-script-start'
+        this.removeAddedScriptsStart = '<script '+this.removeAddedScriptsStartAttr+'></script>'
+        this.removeAddedScriptsEndAttr = 'remove-script-end'
+        this.removeAddedScriptsEnd = '<script '+this.removeAddedScriptsEndAttr+'></script>'
         var baseTagHref=""
         var iframeAppScriptPath = "bower-tagy-components-iframe-app/scripts/scripts.js";
         var iframeAppExtraModulesArr =[]
@@ -55,6 +59,21 @@ angular.module('tagyComponents')
             }
             var endAt = markup.indexOf("</head>", startAt)
             markup = markup.slice(0, startAt) + markup.slice(endAt)
+
+            //remove scripts at the top
+
+
+                endAt=markup.indexOf("</head>", startAt)
+                if(endAt>0){
+                    endAt=markup.lastIndexOf(self.removeAddedScriptsEndAttr, endAt)
+                    if(endAt>0){
+                        var headTag = "<head>";
+                        startAt = markup.indexOf(headTag)+headTag.length
+                        var endStr = "</script>";
+                        endAt=markup.indexOf(endStr, endAt)+endStr.length
+                        markup = markup.slice(0, startAt) + markup.slice(endAt)
+                    }
+                }
             //remove elements with removeInProductionClassName
             var bodyHtml = self.getStringInsideBodyOrHeadTag(markup, "body")
             var bodyEl = $("<div/>").html(bodyHtml)
@@ -157,6 +176,15 @@ angular.module('tagyComponents')
             return  ret
         }
 
+        this.clearAndPrependToHeadElement = function (markup, prependString, clearIfExists) {
+            if (clearIfExists)  markup = markup.replace(prependString, "")
+            var appToTag = "<head>";
+            var startAt = markup.indexOf(appToTag)+appToTag.length
+            if (startAt <= appToTag.length)return markup
+            var ret = markup.slice( 0,startAt) + prependString + markup.slice(startAt);
+            return  ret
+        }
+
         this.getBodyOrHeadOpenTag = function (markupString, tagName) {
             var searchOpenTagStr = "<" + tagName;
             var openTagCloseStr = ">"
@@ -233,6 +261,7 @@ angular.module('tagyComponents')
             markup=insertBaseTag(markup)
             //TODO removeEditGeneratedTagsAfterThisMetaElement is a quick fix better remove with search
             markup = self.clearAndAppendToHeadElement(markup, self.removeEditGeneratedTagsAfterThisMetaElement)
+            markup=self.clearAndPrependToHeadElement(markup,self.removeAddedScriptsStart+self.removeAddedScriptsEnd)
             var editStylesheets = ''
             //TODO move/add directive specific scripts from directive itself
             var editScripts = ''
@@ -242,7 +271,7 @@ angular.module('tagyComponents')
                 + getExtraModulesInitArr()
                 + '<script src="'+ iframeAppScriptPath+'"></script>'
             markup = self.clearAndAppendToHeadElement(markup, editStylesheets)
-            markup = self.clearAndAppendToHeadElement(markup, editScripts)
+            markup = self.clearAndPrependToHeadElement(markup, editScripts)
             return markup
         }
 
