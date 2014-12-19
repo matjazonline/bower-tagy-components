@@ -226,7 +226,8 @@ angular.module('tagyComponents')
             } else {
                 if (changeMarkupChangeId)markup = markupChangeIdFac.changeMarkupChangeId(markup)
             }
-            if(markup.indexOf(iframeEditorAppAttr)<0)markup = markup.replace("<html", '<html ng-app="tagyCmsClientApp" ')
+            //for manual bootstrap check if any cnv-* directive present if(markup.indexOf(iframeEditorAppAttr)<0)markup = markup.replace("<html", '<html ng-app="tagyCmsClientApp" ')
+            if(markup.indexOf("cnv-")<0)markup = markup.replace("<html", '<html ng-app="tagyCmsClientApp" ')
             markup=self.addEditModeCssClass(markup)
             markup=self.addTopLevelEditableComponentAttr(markup)
             markup=insertBaseTag(markup)
