@@ -4,7 +4,6 @@ angular.module('tagyComponents')
     .service('EditHtmlService', function EditHtmlService($rootScope, $q, $timeout, EditableSer, markupChangeIdFac, editableComponentFactory, EditableMessageChannel) {
 
         this.removeInProductionClassName = "remove-in-production"
-        this.keepInProdAttrName = "keep-in-production";
         this.removeEditGeneratedTagsAfterThisMetaElement = '<meta class="remove-added-tags-to-head-from-here">'
         this.removeAddedScriptsStartAttr = 'remove-script-start'
         this.removeAddedScriptsStart = '<script '+this.removeAddedScriptsStartAttr+'></script>'
@@ -75,19 +74,12 @@ angular.module('tagyComponents')
                         markup = markup.slice(0, startAt) + markup.slice(endAt)
                     }
                 }
-
-            markup=self.removeElementsWithoutKeepInProduction(markup)
             //remove elements with removeInProductionClassName
             var bodyHtml = self.getStringInsideBodyOrHeadTag(markup, "body")
             var bodyEl = $("<div/>").html(bodyHtml)
             bodyEl.find("." + self.removeInProductionClassName).remove()
             bodyEl.find("[" + self.removeInProductionClassName+"]").remove()
             markup = self.replaceStringInsideBodyOrHeadTag(markup, bodyEl.html(), "body")
-            var headHtml = self.getStringInsideBodyOrHeadTag(markup, "head")
-            var headEl = $("<div/>").html(headHtml)
-            headEl.find("." + self.removeInProductionClassName).remove()
-            headEl.find("[" + self.removeInProductionClassName+"]").remove()
-            markup = self.replaceStringInsideBodyOrHeadTag(markup, headEl.html(), "head")
             // make html class values unique
             markup = self.makeHtmlClassValuesUnique(markup)
             //remove angular styles
@@ -193,45 +185,6 @@ angular.module('tagyComponents')
             return  ret
         }
 
-        this.addKeepInProductionAttrs = function (markup) {
-            var headHtml = self.getStringInsideBodyOrHeadTag(markup, "head")
-            var headTempHolderEl = $("<div/>").html(headHtml)
-            headTempHolderEl.find("script,style").attr(self.keepInProdAttrName,'')
-            markup = self.replaceStringInsideBodyOrHeadTag(markup, headTempHolderEl.html(), "head")
-            var bodyHtml = self.getStringInsideBodyOrHeadTag(markup, "body")
-            var bodyTempHolderEl = $("<div/>").html(bodyHtml)
-            bodyTempHolderEl.find("script,style").attr(self.keepInProdAttrName,'')
-            markup = self.replaceStringInsideBodyOrHeadTag(markup, bodyTempHolderEl.html(), "body")
-            return markup
-        }
-
-        this.removeElementsWithoutKeepInProduction = function (markup) {
-            var headHtml = self.getStringInsideBodyOrHeadTag(markup, "head")
-            var headTempHolderEl = $("<div/>").html(headHtml)
-            //console.log("removeElementsWithoutKeepInProductionHHH",headHtml)
-            headTempHolderEl.find("script,style").each(function(i,el){
-                var $el = $(el);
-                if($el.attr(self.keepInProdAttrName)==null){
-                    $el.remove()
-                }else{
-                    $el.removeAttr(self.keepInProdAttrName)
-                }
-            })
-            markup = self.replaceStringInsideBodyOrHeadTag(markup, headTempHolderEl.html(), "head")
-            var bodyHtml = self.getStringInsideBodyOrHeadTag(markup, "body")
-            var bodyTempHolderEl = $("<div/>").html(bodyHtml)
-            bodyTempHolderEl.find("script,style").each(function(i,el){
-                var $el = $(el);
-                if($el.attr(self.keepInProdAttrName)==null){
-                    $el.remove()
-                }else{
-                    $el.removeAttr(self.keepInProdAttrName)
-                }
-            })
-            markup = self.replaceStringInsideBodyOrHeadTag(markup, bodyTempHolderEl.html(), "body")
-            return markup
-        }
-
         this.getBodyOrHeadOpenTag = function (markupString, tagName) {
             var searchOpenTagStr = "<" + tagName;
             var openTagCloseStr = ">"
@@ -258,14 +211,6 @@ angular.module('tagyComponents')
             if (fromIndex < 0)return ""
             var startAt = originalMarkup.indexOf(openTagCloseStr, fromIndex) + 1
             var endAt = originalMarkup.indexOf("</" + tagName)
-            var betweenOpenStart=originalMarkup.lastIndexOf(searchOpenTagStr, endAt)
-            var prevStartAt=startAt
-            while(betweenOpenStart>prevStartAt) {
-                endAt = originalMarkup.indexOf("</" + tagName, endAt)
-                prevStartAt=betweenOpenStart
-                betweenOpenStart=originalMarkup.lastIndexOf(searchOpenTagStr, endAt)
-            }
-
             var ret = originalMarkup.slice(0, startAt) + replaceWithMarkup + originalMarkup.slice(endAt)
             return  ret
         }
@@ -315,7 +260,6 @@ angular.module('tagyComponents')
             markup=self.addTopLevelEditableComponentAttr(markup)
             markup=insertBaseTag(markup)
             //TODO removeEditGeneratedTagsAfterThisMetaElement is a quick fix better remove with search
-
             markup = self.clearAndAppendToHeadElement(markup, self.removeEditGeneratedTagsAfterThisMetaElement)
             markup=self.clearAndPrependToHeadElement(markup,self.removeAddedScriptsStart+self.removeAddedScriptsEnd)
             var editStylesheets = ''
@@ -328,7 +272,6 @@ angular.module('tagyComponents')
                 + '<script src="'+ iframeAppScriptPath+'"></script>'
             markup = self.clearAndAppendToHeadElement(markup, editStylesheets)
             markup = self.clearAndPrependToHeadElement(markup, editScripts)
-            markup= self.addKeepInProductionAttrs(markup)
             return markup
         }
 
