@@ -23,13 +23,13 @@ angular.module('tagyComponents')
         var _lastMarkupChangeId = null
 
 
-        this.editHtmlMarkup = function (markup, resetMarkupChangeId) {
+        this.editHtmlMarkup = function (markup, resetMarkupChangeId, pageRootRelPath) {
             var deferred = $q.defer()
             var newChangeId = null
             if (markup != null) {
                 newChangeId = markupChangeIdFac.getMarkupChangeId(markup)
-                var changeMarkupChangeId = (resetMarkupChangeId || newChangeId <= _lastMarkupChangeId );
-                markup = self.getIframeHtmlMarkup(markup, changeMarkupChangeId)
+                var changeMarkupChangeId = (resetMarkupChangeId==true || newChangeId <= _lastMarkupChangeId );
+                markup = self.getIframeHtmlMarkup(markup, changeMarkupChangeId,pageRootRelPath)
                 if (changeMarkupChangeId)newChangeId = markupChangeIdFac.getMarkupChangeId(markup)
                 _editingHtmlMarkup = markup
                 var cleanMarkup = self.cleanEditFrameworkCode(markup);
@@ -300,7 +300,7 @@ angular.module('tagyComponents')
         }
 
 
-        this.getIframeHtmlMarkup = function (markup, changeMarkupChangeId) {
+        this.getIframeHtmlMarkup = function (markup, changeMarkupChangeId,pageRootRelPath) {
             //TODO cache getMarkup() result
             if (markup == null)return ""
             if (markup.indexOf("<html") < 0) {
@@ -321,11 +321,12 @@ angular.module('tagyComponents')
             var editStylesheets = ''
             //TODO move/add directive specific scripts from directive itself
             var editScripts = ''
-                + '<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>'
-                + '<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>'
+                + '<script '+self.removeInProductionClassName+' src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>'
+                + '<script '+self.removeInProductionClassName+' src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>'
                 + getExtraModulesScriptPaths()
                 + getExtraModulesInitArr()
-                + '<script src="'+ iframeAppScriptPath+'"></script>'
+                + '<script '+self.removeInProductionClassName+' src="'+ iframeAppScriptPath+'"></script>'
+            if(pageRootRelPath)editScripts=editScripts+ '<script '+self.removeInProductionClassName+'>window.cnvXConfigPath="'+pageRootRelPath+'"</script>'
             markup = self.clearAndAppendToHeadElement(markup, editStylesheets)
             markup = self.clearAndPrependToHeadElement(markup, editScripts)
             markup= self.addKeepInProductionAttrs(markup)
@@ -336,7 +337,7 @@ angular.module('tagyComponents')
             var ret=''
             for (var i = 0; i < iframeAppExtraModulesPathArr.length; i++) {
                 var path = iframeAppExtraModulesPathArr[i];
-                if(path!=null&& path.length>0)ret=ret+'<script src="'+ path+'"></script>'
+                if(path!=null&& path.length>0)ret=ret+'<script '+self.removeInProductionClassName+' src="'+ path+'"></script>'
             }
             return ret
         }
@@ -351,7 +352,7 @@ angular.module('tagyComponents')
                 if(i+1==iframeAppExtraModulesArr.length)modulesArrStr=modulesArrStr+']'
             }
             if(modulesArrStr.length>0) {
-                ret='<script>var _tagyCmsClientAppExtraModules='+modulesArrStr+'</script>'
+                ret='<script '+self.removeInProductionClassName+'>var _tagyCmsClientAppExtraModules='+modulesArrStr+'</script>'
             }
             return ret
         }

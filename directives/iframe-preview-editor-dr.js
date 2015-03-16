@@ -10,6 +10,7 @@ angular.module('tagyComponents')
                   '</div>',
       restrict: 'E',
       scope:{
+          rootRelPagePath:'@'
       },
       link: function postLink(scope, element, attrsattrs) {
           var currIframeDoc=null
@@ -28,7 +29,7 @@ angular.module('tagyComponents')
               }
               var mkp=markupChangeIdFac.changeMarkupChangeId(EditHtmlService.cleanEditFrameworkCode  (getMarkup()))
               dontUpdateOnChangeId=markupChangeIdFac.getCurrentChangeId(mkp)
-              EditHtmlService.editHtmlMarkup(mkp)
+              EditHtmlService.editHtmlMarkup(mkp,false,scope.rootRelPagePath)
           };
 
 

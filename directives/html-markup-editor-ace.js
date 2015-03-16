@@ -7,6 +7,7 @@ angular.module('tagyComponents')
                 '<div ui-ace="{showGutter: true,theme:\'twilight\',mode: \'html\',onLoad: aceLoaded,onChange: aceChanged}" ng-model="editHtml"></div></div>',
             restrict: 'E',
             scope:{
+                rootRelPagePath:'@',
                 showButton:'@',
                 editHtml:'@',
                 setUpdateHtmlAceValueFn:'='
@@ -25,7 +26,7 @@ angular.module('tagyComponents')
                     if(scope.aceDirty) {
                         var mkp = markupChangeIdFac.changeMarkupChangeId(scope.editHtml)
                         dontUpdateOnChangeId = markupChangeIdFac.getCurrentChangeId(mkp)
-                        var updatedPromise=EditHtmlService.editHtmlMarkup(mkp)
+                        var updatedPromise=EditHtmlService.editHtmlMarkup(mkp,false,scope.rootRelPagePath)
                         updatedPromise.then(function(){
                             var positionCursor=function(){
                                 $timeout(function(){

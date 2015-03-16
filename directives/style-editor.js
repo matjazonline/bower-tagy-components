@@ -33,7 +33,7 @@ angular.module('tagyComponents')
                 mkp=markupChangeIdFac.changeMarkupChangeId(mkp)
                 dontUpdateOnChangeId=markupChangeIdFac.getCurrentChangeId(mkp)
                 scope.editHtml=mkp
-                EditHtmlService.editHtmlMarkup(mkp)
+                EditHtmlService.editHtmlMarkup(mkp,false,scope.rootRelPagePath)
             })*/
       }
     };

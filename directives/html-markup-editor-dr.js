@@ -6,6 +6,7 @@ angular.module('tagyComponents')
       template: '<div><textarea id="edit-html-iframe-markup-field" ng-model="editHtml" style="height: 300px;"></textarea><a ng-show="displayButton==true" class="button success" ng-click="updateHtmlPreview()">preview changes</a></div>',
       restrict: 'E',
         scope:{
+            rootRelPagePath:'@',
             editHtml:'@',
             displayButton:'@'
         },
@@ -20,7 +21,7 @@ angular.module('tagyComponents')
           scope.updateHtmlPreview=function(){
               var mkp=markupChangeIdFac.changeMarkupChangeId(scope.editHtml)
               dontUpdateOnChangeId=markupChangeIdFac.getCurrentChangeId(mkp)
-              EditHtmlService.editHtmlMarkup(mkp)
+              EditHtmlService.editHtmlMarkup(mkp,false,scope.rootRelPagePath)
           }
 
 
