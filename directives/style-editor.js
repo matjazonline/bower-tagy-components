@@ -9,12 +9,12 @@ angular.module('tagyComponents')
           '</ul></div>',
       restrict: 'E',
         scope:{
-            //editHtml:'@'
-            //,editableStyleValues:'='
+            //editHtml:'@',
+            //editableStyleValues:'='
         },
         link: function postLink(scope, element, attrs) {
 
-            EditableMessageChannel.onEditableStyleItemAdded(scope,function(styleItem, updatedStyleItems   ){
+            EditableMessageChannel.onEditableStyleItemAdded(scope,function(styleItem, updatedStyleItems){
                 scope.editableStyleValues=updatedStyleItems
             })
 

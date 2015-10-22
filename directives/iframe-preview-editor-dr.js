@@ -42,6 +42,8 @@ angular.module('tagyComponents')
 
           var getMarkup=function(){
               if(currIframeDoc==null)return null
+              //TODO also have a callback when view has been productionReady updated - $(currIframeDoc.documentElement).trigger('tagyCms:productionReady')
+              //console.log("iframe-preview-editor collll")
               var mkp = EditHtmlService.getDocTypeAsString(currIframeDoc) + currIframeDoc.documentElement.outerHTML;
               return  mkp
           }

@@ -80,7 +80,7 @@ angular.module('tagyComponents')
                 })
 
                 CrossFrameConnection.addCrossFrameEventListener(new EchoEventHandler(EditableMessageChannel.EVENT_EDIT, function (editableObj) {
-                    console.log("EEEE",editableObj)
+                    //console.log("EEEE",editableObj)
                     EditableMessageChannel.dispatchEditEvent(editableObj)
                 }))
 

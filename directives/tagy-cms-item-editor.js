@@ -123,7 +123,7 @@ angular.module('tagyComponents')
                                 //TODO select image for specific editableProp
                                 EditableMessageChannel.dispatchSelectImageWaiting(scope._editableItem)
                             }
-                            console.log("editable onEDIT=",scope._editableItem)
+                            //console.log("editable onEDIT=",scope._editableItem)
                         }
                     }else{
                         scope._editableItem=null
