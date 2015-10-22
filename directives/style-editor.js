@@ -4,7 +4,7 @@ angular.module('tagyComponents')
   .directive('styleEditor', function (EditableMessageChannel,EditableStyleSer,markupChangeIdFac,EditHtmlService) {
     return {
       template: '<div>' +
-          ' <ul>' +
+          ' <ul style="list-style: none;">' +
           '<li ng-repeat="styleValueObj in editableStyleValues"><style-value-editor-dr style-Value-Obj="styleValueObj"></style-value-editor-dr></li>' +
           '</ul></div>',
       restrict: 'E',

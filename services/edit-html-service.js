@@ -135,7 +135,8 @@ angular.module('tagyComponents')
                 prnt.html(cont)
                 prnt.removeClass("ng-isolate-scope")
                 prnt.removeClass("ng-scope")
-                var clArr = prnt.attr('class').split(/\s+/);
+                var clArr = prnt.attr('class')
+                if(clArr)clArr=clArr.split(/\s+/);
                 if(clArr!=null && (clArr.length<1 || (clArr.length==1 && clArr[0].length<1))){
                     prnt.removeAttr('class');
                 }
