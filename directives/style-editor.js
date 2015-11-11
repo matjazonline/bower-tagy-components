@@ -3,7 +3,7 @@
 angular.module('tagyComponents')
   .directive('styleEditor', function (EditableMessageChannel,EditableStyleSer,markupChangeIdFac,EditHtmlService) {
     return {
-      template: '<div>' +
+      template: '<div style="overflow: scroll;height: 500px;display: block;">' +
           ' <ul style="list-style: none;">' +
           '<li ng-repeat="styleValueObj in editableStyleValues"><style-value-editor-dr style-Value-Obj="styleValueObj"></style-value-editor-dr></li>' +
           '</ul></div>',

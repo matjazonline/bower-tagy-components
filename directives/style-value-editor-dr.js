@@ -3,7 +3,13 @@
 angular.module('tagyComponents')
   .directive('styleValueEditorDr', function (EditableMessageChannel) {
     return {
-      template: '<div><input type="color" name="colorInput" ng-model="styleValueObj.value"/><small>{{styleValueObj.value}}</small> {{styleValueObj.title}}  </div>',
+      template: '<div  class="style-value-editor">' +
+                  '<span class="color-edit-swatch">' +
+                      '<input type="color" name="colorInput" ng-model="styleValueObj.value"/>' +
+                      '<small class="color-edit-swatch-caption">{{styleValueObj.value}}</small>' +
+                  '</span>  ' +
+                  '<span class="color-edit-title">{{styleValueObj.title}}</span>  ' +
+                '</div>',
       restrict: 'E',
         scope:{
             styleValueObj:'='
