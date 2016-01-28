@@ -50,6 +50,9 @@
                 },
                 link: function postLink(scope, element, attrs,controller) {
                     //scope.editable = editableContentFactory.getInstance(element, scope, "", "", "", null)
+
+                    var imgUrlParam = '&_tagy-cms-link=';
+                    var imgLinkTargetSplitStr = '|*|';
                     var _originalCssDisplayVal=$(element).css('display')
                     if(attrs.tagyCmsVisible==null)attrs.tagyCmsVisible=_originalCssDisplayVal!='none'
                     attrs.tagyCmsVisible=(attrs.tagyCmsVisible==true||attrs.tagyCmsVisible=='true')?true:false
@@ -137,6 +140,15 @@
                             ev.stopPropagation()
                             scope.$apply(function () {
                                 scope.editable.value = scope.data.value
+                                if(element.parent().prop("tagName")!="A" || (element.parent().prop("tagName")=="A" && element.parent().attr("tagy-cms-ignore")==null)){
+                                    var hrefVal = element.parent().attr("href");
+                                    if(!hrefVal)hrefVal = '';
+                                    scope.editable.value+=imgUrlParam+ hrefVal
+                                    if(element.parent().attr("target")) {
+                                        scope.editable.value+=imgLinkTargetSplitStr+element.parent().attr("target")
+                                    }
+
+                                }
                                 EditableMessageChannel.dispatchEditEvent(scope.editable)
                             })
 
@@ -146,22 +158,55 @@
                         })
 
                         /*if(attrs.tagyCmsThumb!=null && element.parent().is("A")){
-                            element.parent().click(function (ev) {
-                                console.log("PPPPPPPPCCC")
-                                ev.preventDefault()
-                                ev.stopPropagation()
-                            })
-                        }*/
+                         element.parent().click(function (ev) {
+                         console.log("PPPPPPPPCCC")
+                         ev.preventDefault()
+                         ev.stopPropagation()
+                         })
+                         }*/
 
                         scope.update = function (value) {
                             if (value != element.attr("src") && angular.isString(value)) {
                                 /*element.attr("src", value)
-                                scope.data.value = value*/
-                                if(attrs.tagyCmsThumb!=null && element.parent().is("A")){
-                                    element.parent().attr("href",scope.editable.value)
+                                 scope.data.value = value*/
+                                var parentAEl = element.parent();
+                                if(attrs.tagyCmsThumb!=null && parentAEl.is("A")){
+                                    parentAEl.attr("href",scope.editable.value)
                                     scope.data.value = value+'?s'
                                     element.attr("src", scope.data.value)
                                 }else{
+                                    var imageLinkUrl, imageLinkUrlSplArr;
+                                    if(value.indexOf(imgUrlParam)>-1 ){
+                                        var imageLinkUrlSplit = value.split(imgUrlParam)
+                                        value = imageLinkUrlSplit[0];
+                                        imageLinkUrl = imageLinkUrlSplit[1] || '';
+                                        imageLinkUrlSplArr=imageLinkUrl.split(imgLinkTargetSplitStr)
+                                        imageLinkUrl = imageLinkUrlSplArr[0];
+                                    }
+
+                                    if( (parentAEl.prop("tagName")!="A" || (parentAEl.prop("tagName")=="A" && parentAEl.attr("tagy-cms-ignore")==null)) ){
+
+                                        var wrapEl = false;
+                                        if(!imageLinkUrl&& parentAEl.prop("tagName")=="A") {
+                                            element.unwrap();
+                                        }else if(imageLinkUrl && parentAEl.prop("tagName")!="A") {
+                                            parentAEl=$('<a></a>')
+                                            wrapEl = true;
+                                        }
+
+                                        if(imageLinkUrl) {
+                                            parentAEl.attr("href", imageLinkUrl);
+                                            var targetVal = imageLinkUrlSplArr[1];
+                                            if(!targetVal)targetVal='_self'
+                                            parentAEl.attr("target", targetVal);
+                                            if(wrapEl) {
+                                                element.wrap(parentAEl)
+                                            }
+                                        }
+
+                                    }
+
+
                                     element.attr("src", value)
                                     scope.data.value = value
                                 }
@@ -311,7 +356,7 @@
                     scope.editable.registerOnComponent()
                     /*attrs.$observe('tagyCmsVisible', function(val) {
                      scope.setVisible(val)
-                    })*/
+                     })*/
                     /*if(attrs.editableTitle!=null){
                      scope.editable.updateOpts(element, scope, attrs.editableTitle, attrs.editableDescription, null, getDataValue())
                      }*/

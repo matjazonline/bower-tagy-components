@@ -27,6 +27,7 @@ angular.module('tagyComponents')
                         var mkp = markupChangeIdFac.changeMarkupChangeId(scope.editHtml)
                         dontUpdateOnChangeId = markupChangeIdFac.getCurrentChangeId(mkp)
                         var updatedPromise=EditHtmlService.editHtmlMarkup(mkp,false,scope.rootRelPagePath)
+
                         updatedPromise.then(function(){
                             var positionCursor=function(){
                                 $timeout(function(){
