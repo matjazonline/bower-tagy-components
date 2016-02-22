@@ -110,6 +110,24 @@
                                 $(element).css("background-image", 'none')
                             }
                         }
+                        if (scope.data.editProp_nameAttr != null) {
+
+                            scope.data.editProp_nameAttr = editableProps.nameAttr == '' || editableProps.nameAttr == null ? '' : editableProps.nameAttr
+                            if (scope.data.editProp_nameAttr != '') {
+                                $(element).attr("name",  scope.data.editProp_nameAttr )
+                            } else {
+                                $(element).attr("name", '')
+                            }
+                        }
+                        if (scope.data.editProp_valueAttr != null) {
+
+                            scope.data.editProp_valueAttr = editableProps.valueAttr == '' || editableProps.valueAttr == null ? '' : editableProps.valueAttr
+                            if (scope.data.editProp_valueAttr != '') {
+                                $(element).attr("value",  scope.data.editProp_valueAttr )
+                            } else {
+                                $(element).attr("value", '')
+                            }
+                        }
                     }
 
                     scope.data = {}
@@ -281,8 +299,17 @@
                             if (attrs.editableProps.indexOf("background-image") > -1) {
                                 scope.data.editProp_backgroundImage = getBackgroundFilePath($(element).css("background-image"));
 
-
                                 scope.editable.editProps["backgroundImage"] = scope.data.editProp_backgroundImage
+                            }
+                            if(attrs.editableProps.indexOf("name-attr") > -1) {
+                                scope.data.editProp_nameAttr = $(element).attr("name") || '';
+
+                                scope.editable.editProps["nameAttr"] = scope.data.editProp_nameAttr
+                            }
+                            if(attrs.editableProps.indexOf("value-attr") > -1) {
+                                scope.data.editProp_valueAttr = $(element).attr("value") || '';
+
+                                scope.editable.editProps["valueAttr"] = scope.data.editProp_valueAttr
                             }
                         }
                         if (currTagName == "A") {
